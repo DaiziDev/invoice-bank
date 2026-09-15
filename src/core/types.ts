@@ -1,8 +1,14 @@
-export type Lang = 'fr' | 'en';
-export type NetState = 'on' | 'weak' | 'off';
-export type AccountType = 'current' | 'savings' | 'wallet';
-export type TxStatus = 'DRAFT' | 'PENDING' | 'QUEUED' | 'SENT' | 'SETTLED' | 'FAILED';
-export type TransferKind = 'own' | 'internal' | 'phone' | 'wallet';
+export type Lang = "fr" | "en";
+export type NetState = "on" | "weak" | "off";
+export type AccountType = "current" | "savings" | "wallet";
+export type TxStatus =
+  | "DRAFT"
+  | "PENDING"
+  | "QUEUED"
+  | "SENT"
+  | "SETTLED"
+  | "FAILED";
+export type TransferKind = "own" | "internal" | "phone" | "wallet";
 export type Tier = 1 | 2 | 3;
 
 export interface Account {
@@ -27,11 +33,11 @@ export interface Transaction {
   /** Garantit qu'une opération rejouée après coupure ne se duplique pas. */
   idempotencyKey: string;
   accountId: string;
-  direction: 'DEBIT' | 'CREDIT';
+  direction: "DEBIT" | "CREDIT";
   amount: number;
   fee: number;
   counterparty: Counterparty;
-  channel: 'APP' | 'USSD';
+  channel: "APP" | "USSD";
   status: TxStatus;
   label: string;
   createdAt: string;
@@ -55,14 +61,14 @@ export interface OutboxItem {
 export interface Beneficiary {
   id: string;
   name: string;
-  kind: 'internal' | 'phone' | 'wallet';
+  kind: "internal" | "phone" | "wallet";
   number: string;
   fav: boolean;
 }
 
 export interface Notification {
   id: string;
-  kind: 'credit' | 'debit' | 'queued' | 'failed';
+  kind: "credit" | "debit" | "queued" | "failed";
   title: string;
   body: string;
   at: string;
@@ -74,6 +80,7 @@ export interface BankProfile {
   bankName: string;
   appName: string;
   initials: string;
+  logo?: string;
   tagline: Record<Lang, string>;
   colors: { brand: string; brand2: string; soft: string };
   fees: Record<TransferKind, number>;
@@ -99,4 +106,8 @@ export interface TransferRequest {
 
 export type ValidationResult =
   | { ok: true; fee: number; total: number }
-  | { ok: false; reason: 'overSingle' | 'overDaily' | 'insufficient'; limit?: number };
+  | {
+      ok: false;
+      reason: "overSingle" | "overDaily" | "insufficient";
+      limit?: number;
+    };
