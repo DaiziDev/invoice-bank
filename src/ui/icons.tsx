@@ -37,4 +37,5 @@ export const Ic = {
   Globe: (p?: { s?: number }) => <Svg s={p?.s ?? 19} d={<><circle cx="12" cy="12" r="9" /><path d="M3 12h18" /><path d="M12 3a15 15 0 010 18 15 15 0 010-18z" /></>} />,
   Reset: (p?: { s?: number }) => <Svg s={p?.s ?? 19} d={<><path d="M3 12a9 9 0 109-9 9 9 0 00-6.4 2.7L3 8" /><path d="M3 3v5h5" /></>} />,
   Power: (p?: { s?: number }) => <Svg s={p?.s} d={<><path d="M12 3v9" /><path d="M18.4 6.6a9 9 0 11-12.8 0" /></>} />,
+  Download: (p?: { s?: number }) => <Svg s={p?.s} d={<><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4" /><path d="M7 10l5 5 5-5" /><path d="M12 15V3" /></>} />,
 };
