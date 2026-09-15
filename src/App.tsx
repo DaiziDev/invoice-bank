@@ -7,7 +7,7 @@ import {
   Routes,
   useLocation,
 } from "react-router-dom";
-import { Device, Ligne, NetBar, StatusBar, TabBar, Toast } from "./ui/shell";
+import { Device, Ligne, NetBar, TabBar, Toast } from "./ui/shell";
 import { currentBank, drainOutbox, getState, useApp } from "./state/store";
 import { Configurator, PlatformHome, Building } from "./screens/platform";
 import {
@@ -112,7 +112,6 @@ function Chrome({ children }: { children: React.ReactNode }) {
   }
   return (
     <Device>
-      <StatusBar />
       <Ligne />
       <NetBar />
       {children}

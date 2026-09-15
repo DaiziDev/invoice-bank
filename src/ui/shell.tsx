@@ -1,9 +1,9 @@
-import { useEffect, type ReactNode } from "react";
+import { useEffect, useState, type ReactNode } from "react";
 import { NavLink, useLocation } from "react-router-dom";
 import { Ic } from "./icons";
 import { t } from "../i18n";
-import { pad2 } from "../core/money";
-import { currentBank, useApp } from "../state/store";
+import { useApp } from "../state/store";
+import { canInstall, isStandalone, promptInstall } from "../core/pwa";
 
 /** Conteneur applicatif responsive : plein écran sur mobile et web sur desktop. */
 export function Device({ children }: { children: ReactNode }) {
@@ -16,22 +16,52 @@ export function Device({ children }: { children: ReactNode }) {
   );
 }
 
-export function StatusBar() {
-  const s = useApp();
-  const bank = currentBank(s);
-  const d = new Date();
+export function PwaInstallButton({ light = false }: { light?: boolean }) {
+  const [hint, setHint] = useState(false);
+  const [installable, setInstallable] = useState(canInstall());
+  const [standalone, setStandalone] = useState(isStandalone());
+
+  useEffect(() => {
+    const onInstallable = () => setInstallable(true);
+    const onInstalled = () => setStandalone(true);
+    window.addEventListener("pwa-installable", onInstallable);
+    window.addEventListener("appinstalled", onInstalled);
+    return () => {
+      window.removeEventListener("pwa-installable", onInstallable);
+      window.removeEventListener("appinstalled", onInstalled);
+    };
+  }, []);
+
+  if (standalone) return null;
+
+  const install = () => {
+    if (installable && canInstall()) {
+      promptInstall();
+      return;
+    }
+    setHint(true);
+    window.setTimeout(() => setHint(false), 4500);
+  };
+
   return (
-    <div
-      className="shrink-0 flex items-end justify-between px-6 pb-1.5 pt-2 md:pt-0 md:h-[46px] mono text-[11.5px] text-white z-40 transition-colors"
-      style={{ background: "var(--brand)" }}
-    >
-      <span>
-        {pad2(d.getHours())}:{pad2(d.getMinutes())}
-      </span>
-      <span className="truncate max-w-[55%] text-right">
-        {bank.appName || bank.bankName}
-      </span>
-    </div>
+    <span className="relative shrink-0">
+      <button
+        type="button"
+        onClick={install}
+        aria-label={t("install")}
+        title={t("install")}
+        className={`grid place-items-center w-8 h-8 rounded-[10px] transition-colors ${light ? "text-muted hover:bg-surface-2 hover:text-brand" : "text-white/85 hover:bg-white/10 hover:text-white"}`}
+      >
+        <Ic.Download s={16} />
+      </button>
+      {hint && (
+        <span className="absolute right-0 top-[calc(100%+10px)] z-50 w-[240px] rounded-[12px] bg-surface text-ink text-[11.5px] leading-snug px-3.5 py-3 shadow-[0_14px_34px_-12px_rgba(0,0,0,.45)] border border-[var(--line)]">
+          {/iPhone|iPad|iPod/i.test(navigator.userAgent)
+            ? t("installIos")
+            : t("installHint")}
+        </span>
+      )}
+    </span>
   );
 }
 
